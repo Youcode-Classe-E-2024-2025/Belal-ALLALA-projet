@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="CSS/output.css">
-   <title>KANBAN</title>
-</head>
-
-<body class="">
-
-</body>
-
-</html>
+<?php require "functions.php" ?>
+<?php require "views/components/head.php" ?>
+<?php require "views/components/nav.php" ?>
+<?php require "router.php" ?>
