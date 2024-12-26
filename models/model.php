@@ -1,6 +1,4 @@
 <?php
-    <?php
-
     class database {
         private $pdo;
     
@@ -20,4 +18,4 @@
         }
     
     }
-    
+?>
