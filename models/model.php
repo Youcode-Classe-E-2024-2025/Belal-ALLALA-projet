@@ -155,8 +155,8 @@
             $params = [
                 $this->name,
                 $this->email,
-                $hashedPassword
-                $this->id
+                $hashedPassword,
+                $this->id,
             ];
 
             $stmt = $this->db->query($sql, $params);
@@ -268,10 +268,10 @@
         private $db;
     
         public function __construct($id,$name,$adminId,$db) {
-            $this->id = $id
+            $this->id = $id;
             $this->name = $name;
             $this->adminId = $adminId;
-            $this->db = $db
+            $this->db = $db;
             $this->createTeam();
         }
     
