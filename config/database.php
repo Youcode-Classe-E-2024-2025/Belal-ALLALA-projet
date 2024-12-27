@@ -3,7 +3,7 @@ require_once '../models/model.php' ;
 $sql_file_path = 'data.sql'; 
 
 try {
-    $db = new database();
+    $db = new Database();
 } catch (PDOException $e) {
     try {
         $db_create = new database('localhost','','root',''); 
