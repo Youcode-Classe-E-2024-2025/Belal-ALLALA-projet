@@ -19,35 +19,34 @@
     
     }
 
-
     class Validator {
 
-        public function notEmpty($value) {
+        public static function notEmpty($value) {
             return !empty(trim($value));
         }
 
-        public function minLength($value, $min) {
+        public static function minLength($value, $min) {
             return strlen($value) >= $min;
         }
 
-        public function maxLength($value, $max) {
+        public static function maxLength($value, $max) {
             return strlen($value) <= $max;
         }
 
-        public function email($value) {
+        public static function email($value) {
             $pattern = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
             return preg_match($pattern, $value) === 1;
         }
 
-        public function strongPassword($value) {
+        public static function strongPassword($value) {
             return preg_match('/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/', $value) === 1;
         }
 
-        public function regex($value, $pattern) {
+        public static function regex($value, $pattern) {
             return preg_match($pattern, $value);
         }
 
-        public function matches($value, $comparisonValue) {
+        public static function matches($value, $comparisonValue) {
             return $value === $comparisonValue;
         }
     }
@@ -55,39 +54,36 @@
 
     class User {
         private $db;
-        private $validator;
         private $id;
         private $name;
         private $email;
         private $password;
 
-        public function __construct($db, $validator, $id , $name, $email, $password) {
+        public function __construct($db, $id, $name, $email, $password) {
             $this->db = $db; 
-            $this->validator = $validator; 
             $this->id = $id;
             $this->name = $name;
             $this->email = $email;
             $this->password = $password;
-
         }
 
         public function createUser() {
 
-            if (!$this->validator->notEmpty($this->name)) {
+            if (!Validator::notEmpty($this->name)) {
                 return [
                     'success' => false,
                     'message' => 'Le nom ne peut pas être vide.'
                 ];
             }
 
-            if (!$this->validator->email($this->email)) {
+            if (!Validator::email($this->email)) {
                 return [
                     'success' => false,
                     'message' => 'Email invalide.'
                 ];
             }
 
-            if (!$this->validator->strongPassword($this->password)) {
+            if (!Validator::strongPassword($this->password)) {
                 return [
                     'success' => false,
                     'message' => 'Le mot de passe n\'est pas assez fort.'
@@ -103,12 +99,10 @@
                 ];
             }
 
-            $sql = "INSERT INTO users (name, email, password_hash,created_at) VALUES (?,?,?,?)";
-            $date = date('Y-m-d');
+            $sql = "INSERT INTO users (name, email, password_hash,created_at) VALUES (?,?,?,NOW())";
             $params = [ $this->name, 
                     $this->email,
-                    $hashedPassword,
-                    $date
+                    $hashedPassword
                 ];
 
             $stmt = $this->db->query($sql, $params);
@@ -155,8 +149,8 @@
             $params = [
                 $this->name,
                 $this->email,
-                $hashedPassword
-                $this->id
+                $hashedPassword,
+                $this->id,
             ];
 
             $stmt = $this->db->query($sql, $params);
@@ -200,8 +194,8 @@
             return $stmt->fetchColumn() > 0;
         }
 
-        public function checkPassword($password) {
-            return password_verify($password, $this->password);
+        public function checkPassword($password, $hashedPassword) {
+            return password_verify($password, $hashedPassword);
         }
 
         public function login($email, $password) {
@@ -268,10 +262,10 @@
         private $db;
     
         public function __construct($id,$name,$adminId,$db) {
-            $this->id = $id
+            $this->id = $id;
             $this->name = $name;
             $this->adminId = $adminId;
-            $this->db = $db
+            $this->db = $db;
             $this->createTeam();
         }
     
@@ -379,7 +373,7 @@
         }
     
         public function create(array $data) {
-            $sql = "INSERT INTO task (titre, description, deadline, statut, type, id_group, created_ad, updated_at) 
+            $sql = "INSERT INTO task (titre, description, deadline, statut, type, id_group, created_at, updated_at) 
                     VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())";
             $params = [
                 $data['titre'], $data['description'], $data['deadline'],
@@ -439,7 +433,7 @@
             ];
         }
     
-        public function assignUser($idTask, $idUser) {
+        public function assignUser($id_task, $id_user) {
             $sql = "INSERT INTO task_user (id_task, id_user, assigned_at) VALUES (?, ?, NOW())";
             $stmt = $this->db->query($sql, [$id_task, $id_user]);
             if ($stmt->rowCount() > 0) {
@@ -457,7 +451,7 @@
     
         public function unassignUser($id_task, $id_user) {
             $sql = "DELETE FROM task_user WHERE id_task = ? AND id_user = ?";
-            $stmt = $this->db->query($sql, [$_t, $id_user]);
+            $stmt = $this->db->query($sql, [$id_task, $id_user]);
             if ($stmt->rowCount() > 0) {
                 return [
                     'success' => true,
@@ -525,7 +519,7 @@
             return $this->checkResult($stmt, 'Membre retiré de l\'équipe avec succès.');
         }
     
-        public function getByTeam($idGroup) {
+        public function getByTeam($id_group) {
             $sql = "SELECT u.id, u.name, u.email 
                     FROM users u
                     INNER JOIN team_member tm ON u.id = tm.id_user
@@ -554,7 +548,7 @@
         }
     
     
-        public function getTeamsByUser($iduser) {
+        public function getTeamsByUser($id_user) {
             $sql = "SELECT t.id, t.name
                     FROM teams t
                     INNER JOIN team_member tm ON t.id = tm.id_group
@@ -578,6 +572,7 @@
             ];
         }
     }
+
 
     
     class TaskUser {
