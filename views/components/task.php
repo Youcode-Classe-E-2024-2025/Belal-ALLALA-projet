@@ -1,6 +1,6 @@
-<div id="3" class="task relative flex flex-col items-start p-4 mt-3 bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-opacity-100" draggable="true">
+<div class="task relative flex flex-col items-start p-4 mt-3 bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-opacity-100" draggable="true">
    <div class="absolute top-0 right-0 text-gray-500 flex gap-2 pt-1 pr-1">
-      <button class="edit-task-btn active:scale-90">
+      <button id="<?= $i ?>" class="edit-task-btn active:scale-90">
          <i class="fa-solid fa-pen text-sm"></i>
       </button>
       <button class="delete-task-btn  active:scale-90">

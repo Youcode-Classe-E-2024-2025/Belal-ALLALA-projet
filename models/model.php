@@ -1,12 +1,12 @@
 <?php
 class Database
 {
-    private $pdo;
+    public $connection;
 
     public function __construct($host = 'localhost', $dbname = 'TaskFlow', $username = 'root', $password = '')
     {
         $dsn = "mysql:host={$host};dbname={$dbname};charset=utf8mb4";
-        $this->pdo = new PDO($dsn, $username, $password, [
+        $this->connection = new PDO($dsn, $username, $password, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_PERSISTENT => true
@@ -15,9 +15,13 @@ class Database
 
     public function query($sql, $params = [])
     {
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt;
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute($params);
+            return $stmt;
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
     }
 }
 
@@ -262,6 +266,11 @@ class User
     {
         return isset($_SESSION['id']);
     }
+
+    public static function isPersonal()
+    {
+        return !isset($_SESSION['team_id']);
+    }
 }
 
 
@@ -382,69 +391,114 @@ class Task
     private $statut;
     private $type;
     private $idGroup;
-    private $createdAt;
     private $updatedAt;
     private $db;
 
-    public function __construct($db)
+    public function __construct($titre, $description, $deadline, $statut, $type, $id = null, $idGroup = null)
     {
-        $this->db = $db;
+        $this->db = new Database();
+        $this->titre = $titre;
+        $this->description = $description;
+        $this->deadline = $deadline;
+        $this->statut = $statut;
+        $this->type = $type;
+        $this->id = $id;
+        $this->idGroup = $idGroup;
     }
 
-    public function create(array $data)
+    public function create()
     {
-        $sql = "INSERT INTO task (titre, description, deadline, statut, type, id_group, created_at, updated_at) 
+        $sql = "INSERT INTO tasks (titre, description, deadline, statut, type, id_group, created_at, updated_at) 
                     VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())";
         $params = [
-            $data['titre'],
-            $data['description'],
-            $data['deadline'],
-            $data['statut'],
-            $data['type'],
-            $data['id_group']
+            $this->titre,
+            $this->description,
+            $this->deadline,
+            $this->statut,
+            $this->type,
+            $this->idGroup
         ];
+        try {
+            $stmt = $this->db->query($sql, $params);
 
-        $stmt = $this->db->query($sql, $params);
-
-        if ($stmt->rowCount() > 0) {
+            if ($stmt->rowCount() > 0) {
+                return [
+                    'success' => true,
+                    'message' => 'Tâche créée avec succès.',
+                    'id' => $this->db->connection->lastInsertId()
+                ];
+            }
+        } catch (\Throwable $th) {
             return [
-                'success' => true,
-                'message' => 'Tâche créée avec succès.',
-                'id' => $this->db->getLastInsertId()
+                'success' => false,
+                'message' => 'Erreur lors de la création de la tâche.'
             ];
         }
-
-        return [
-            'success' => false,
-            'message' => 'Erreur lors de la création de la tâche.'
-        ];
     }
 
-    public function update(array $data)
+    public static function getTask($id)
     {
-        $sql = "UPDATE task SET titre = ?, description = ?, deadline = ?, statut = ?, type = ?, id_group = ?, updated_at = NOW() 
-                    WHERE id = ?";
-        $params = [
-            $data['titre'],
-            $data['description'],
-            $data['deadline'],
-            $data['statut'],
-            $data['type'],
-            $data['id_group'],
-            $data['id']
-        ];
-        $stmt = $this->db->query($sql, $params);
-        if ($stmt->rowCount() > 0) {
-            return [
-                'success' => true,
-                'message' => 'Tâche mise à jour avec succès.'
-            ];
+        $db = (new Database())->connection;
+
+        // Vérification de la connexion
+        if (!$db) {
+            die("Database connection not established.");
         }
 
-        return [
-            'success' => false,
-            'message' => 'Erreur lors de la mise à jour de la tâche.'
+        $query = "SELECT * FROM tasks WHERE id = ?";
+        $params = [$id];
+
+        try {
+            $stmt = $db->prepare($query);
+            $stmt->execute($params);
+
+            $task = $stmt->fetch();
+
+            if ($task === false) {
+                echo "No user found with ID $id.";
+            } else {
+                return $task; // Affiche les données utilisateur
+            }
+        } catch (PDOException $e) {
+            echo "Database query error: " . $e->getMessage();
+        }
+    }
+
+    public function update()
+    {
+        $sql = "UPDATE tasks SET titre = ?, description = ?, deadline = ?, statut = ?, type = ?, updated_at = NOW() 
+                WHERE id = ?";
+        $params = [
+            $this->titre,
+            $this->description,
+            $this->deadline,
+            $this->statut,
+            $this->type,
+            $this->id,
         ];
+        try {
+            $stmt = $this->db->connection->prepare($sql);
+            $stmt->execute($params);
+
+            // Vérifie le nombre de lignes affectées
+            if ($stmt->rowCount() > 0) {
+                return [
+                    'success' => true,
+                    'message' => 'Tâche mise à jour avec succès.'
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Aucune modification effectuée ou erreur lors de la mise à jour.'
+                ];
+            }
+        } catch (\Throwable $th) {
+            // Gère les erreurs
+            return [
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour de la tâche : ' . $th->getMessage()
+            ];
+        }
     }
 
     public function delete($id)

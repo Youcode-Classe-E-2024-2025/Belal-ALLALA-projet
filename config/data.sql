@@ -33,10 +33,10 @@ CREATE TABLE tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titre VARCHAR(150) NOT NULL,
     description TEXT,
-    deadline DATE NOT NULL,
+    deadline TIMESTAMP NOT NULL,
     statut ENUM('Todo', 'Doing', 'Done') DEFAULT 'Todo',
     type ENUM('Basic', 'Bug', 'Feature') NOT NULL,
-    id_group INT NOT NULL,
+    id_group INT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_task_group FOREIGN KEY (id_group) REFERENCES teams(id) ON DELETE CASCADE
