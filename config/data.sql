@@ -35,8 +35,8 @@ CREATE TABLE task (
     description TEXT,
     deadline DATE NOT NULL,
     statut ENUM('Todo', 'Doing', 'Done') DEFAULT 'Todo',
-    type ENUM('Basic', 'Bug', 'Feature') NOT NULL,
-    id_group INT NOT NULL,
+    type ENUM('Basic', 'Bug', 'Feature') NOT NULL DEFAULT 'Basic',
+    id_group INT NULL DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_task_group FOREIGN KEY (id_group) REFERENCES teams(id) ON DELETE CASCADE

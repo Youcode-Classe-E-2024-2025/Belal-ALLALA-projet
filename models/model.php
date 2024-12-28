@@ -611,7 +611,7 @@
     
         public function getUsersByTask($id_task) {
             $sql = "SELECT u.id, u.name, u.email
-                    FROM users u
+                    FROM user u
                     INNER JOIN task_user tu ON u.id = tu.id_user
                     WHERE tu.id_task = ?";
             $stmt = $this->db->query($sql, [$id_task]);
@@ -619,7 +619,7 @@
         }
     
         public function getTasksByUser($id_user) {
-            $sql = "SELECT t.id, t.titre, t.description
+            $sql = "SELECT t.id, t.titre, t.description, t.statut, t.deadline, t.type, t.id_group
                     FROM task t
                     INNER JOIN task_user tu ON t.id = tu.id_task
                     WHERE tu.id_user = ?";
@@ -627,7 +627,7 @@
             return $stmt->fetchAll();
         }
     
-          private function checkResult($stmt, $successMessage) {
+        private function checkResult($stmt, $successMessage) {
             if ($stmt->rowCount() > 0) {
                 return [
                     'success' => true,
@@ -639,6 +639,13 @@
                 'success' => false,
                 'message' => 'Erreur lors de l\'opération sur l\'assignation de la tâche.'
             ];
+        }
+
+        public function unassignAll($id_task) {
+            $sql = "DELETE FROM task_user WHERE id_task = ?";
+            $stmt = $this->db->query($sql, [$id_task]);
+        
+            return $this->checkResult($stmt, 'Toutes les assignations pour cette tâche ont été supprimées avec succès.');
         }
     }
 ?>
