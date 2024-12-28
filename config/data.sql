@@ -1,7 +1,7 @@
 CREATE DATABASE TaskFlow;
 USE TaskFlow;
 
-CREATE TABLE user (
+CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
@@ -16,7 +16,7 @@ CREATE TABLE teams (
     id_admin INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_group_admin FOREIGN KEY (id_admin) REFERENCES user(id) ON DELETE CASCADE
+    CONSTRAINT fk_group_admin FOREIGN KEY (id_admin) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE team_member (
@@ -25,11 +25,11 @@ CREATE TABLE team_member (
     id_user INT NOT NULL,
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_group_member_group FOREIGN KEY (id_group) REFERENCES teams(id) ON DELETE CASCADE,
-    CONSTRAINT fk_group_member_user FOREIGN KEY (id_user) REFERENCES user(id) ON DELETE CASCADE,
+    CONSTRAINT fk_group_member_user FOREIGN KEY (id_user) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE (id_group, id_user) 
 ) ENGINE=InnoDB;
 
-CREATE TABLE task (
+CREATE TABLE tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titre VARCHAR(150) NOT NULL,
     description TEXT,
@@ -47,13 +47,13 @@ CREATE TABLE task_user (
     id_task INT NOT NULL,
     id_user INT NOT NULL,
     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_task_user_task FOREIGN KEY (id_task) REFERENCES task(id) ON DELETE CASCADE,
-    CONSTRAINT fk_task_user_user FOREIGN KEY (id_user) REFERENCES user(id) ON DELETE CASCADE,
+    CONSTRAINT fk_task_user_task FOREIGN KEY (id_task) REFERENCES tasks(id) ON DELETE CASCADE,
+    CONSTRAINT fk_task_user_user FOREIGN KEY (id_user) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE (id_task, id_user) 
 ) ENGINE=InnoDB;
 
 -- Insérer des utilisateurs (fake data)
-INSERT INTO user (name, email, password_hash) VALUES
+INSERT INTO users (name, email, password_hash) VALUES
 ('John Doe', 'johndoe@example.com', 'password123'),
 ('Jane Smith', 'janesmith@example.com', 'password123'),
 ('Alice Johnson', 'alicej@example.com', 'password123'),
@@ -72,7 +72,7 @@ INSERT INTO team_member (id_group, id_user) VALUES
 (2, 4);  -- Bob Brown dans Team B
 
 -- Insérer des tâches
-INSERT INTO task (titre, description, deadline, statut, type, id_group) VALUES
+INSERT INTO tasks (titre, description, deadline, statut, type, id_group) VALUES
 ('Fix login bug', 'Fix the login issue on the website', '2024-12-30', 'Todo', 'Bug', 1),
 ('Design new homepage', 'Design the new homepage layout for the website', '2024-12-25', 'Doing', 'Feature', 1),
 ('Write documentation', 'Write the technical documentation for the API', '2024-12-28', 'Todo', 'Basic', 2),
