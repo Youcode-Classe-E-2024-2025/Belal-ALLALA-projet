@@ -4,9 +4,13 @@
    </svg>
    <input class="flex items-center h-10 px-4 ml-10 text-sm bg-gray-200 rounded-full focus:outline-none focus:ring" type="search" placeholder="Search for anything…">
    <div class="ml-auto flex items-center gap-6">
-      <a class="font-semibold  text-gray-500 hover:text-indigo-700 <?= checkURL("/") ? "text-indigo-700" : "" ?>" href="/">home</a>
-      <a class="font-semibold text-gray-500 hover:text-indigo-700 <?= checkURL("/signup") ? "text-indigo-700" : "" ?>" href="/signup">signup</a>
-      <a class="font-semibold text-gray-500 hover:text-indigo-700 <?= checkURL("/login") ? "text-indigo-700" : "" ?>" href="/login">login</a>
+      <a class="font-semibold  text-gray-500 hover:text-indigo-700 <?= checkURL("/") || checkURL("/home") ? "text-indigo-700" : "" ?>" href="/">home</a>
+      <?php if (User::isLoggedIn()) : ?>
+         <a class="font-semibold text-white bg-indigo-700 rounded px-2 py-1" href="/logout">logout</a>
+      <?php else: ?>
+         <a class="font-semibold text-gray-500 hover:text-indigo-700 <?= checkURL("/signup") ? "text-indigo-700" : "" ?>" href="/signup">signup</a>
+         <a class="font-semibold text-gray-500 hover:text-indigo-700 <?= checkURL("/login") ? "text-indigo-700" : "" ?>" href="/login">login</a>
+      <?php endif ?>
       <a href="/profile" class="ml-6 flex items-center justify-center w-8 h-8 overflow-hidden rounded-full cursor-pointer">
          <img src="https://assets.codepen.io/5041378/internal/avatars/users/default.png?fit=crop&format=auto&height=512&version=1600304177&width=512" alt="">
       </a>
