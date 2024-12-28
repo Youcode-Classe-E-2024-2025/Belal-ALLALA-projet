@@ -1,11 +1,31 @@
-<div class="add-team-form overlay hidden w-screen h-screen fixed top-0 left-0 z-20 bg-black/40 flex items-center justify-center">
+<?php 
+   if(isset($_POST['ajouter'])){
+      $package=$_POST['package'];
+      $version=$_POST['version'];
+      $date = date('Y-m-d');
+      $description=$_POST['description'];
+
+      if(!empty($package) && !empty($version)){
+      $sqlState=$pdo->prepare('INSERT INTO versions (version_number, id_package, created_at,release_notes) VALUES (?,?,?,?)');
+      $sqlState->execute([$version,$package,$date,$description]);
+      ?>
+         <div class="alert alert-success" role="alert">
+            la version est ajouter avec succée
+         </div>
+      <?php }else{ ?>
+         <div class="alert alert-danger" role="alert">
+             tout les champs sont obligatoire sont obligatoire!
+         </div>
+      <?php } } ?>
+
+<div  class="add-team-form overlay hidden w-screen h-screen fixed top-0 left-0 z-20 bg-black/40 flex items-center justify-center">
    <div class="w-full rounded-xl max-w-sm p-6 bg-white relative">
       <button class="close-btn active:scale-90 absolute top-0 right-0 p-1 text-lg leading-none">
          <i class="fa-solid fa-xmark"></i>
       </button>
-      <form class="space-y-3" action="/?edit=1&id=test" method="POST">
+      <form  method='post' class="space-y-3" action="/?edit=1&id=test" >
          <div>
-            <label for="name" class="block text-sm/6 font-medium text-gray-900">team name</label>
+            <label for="name" class="block text-sm/6 font-medium text-gray-900" >team name</label>
             <input type="text" placeholder="team name" name="name" id="name" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
          </div>
 

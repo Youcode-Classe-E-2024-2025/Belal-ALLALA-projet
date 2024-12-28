@@ -1,6 +1,5 @@
 <?php
-require_once 'models/model.php';
-$sql_file_path = 'config/data.sql';
+$sql_file_path = 'data.sql'; 
 try {
     $db = new Database();
 } catch (PDOException $e) {

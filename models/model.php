@@ -617,8 +617,7 @@ class TeamMember
 
 
 
-class TaskUser
-{
+class TaskUser {
     private $db;
 
     public function __construct($db)
@@ -676,18 +675,23 @@ class TaskUser
         return $stmt->fetchAll();
     }
 
-    private function checkResult($stmt, $successMessage)
-    {
+    private function checkResult($stmt, $successMessage) {
         if ($stmt->rowCount() > 0) {
             return [
                 'success' => true,
                 'message' => $successMessage
             ];
         }
-
         return [
             'success' => false,
             'message' => 'Erreur lors de l\'opération sur l\'assignation de la tâche.'
         ];
     }
+
+    public function unassignAll($id_task) {
+        $sql = "DELETE FROM task_user WHERE id_task = ?";
+        $stmt = $this->db->query($sql, [$id_task]);
+        return $this->checkResult($stmt, 'Toutes les assignations pour cette tâche ont été supprimées avec succès.');
+    }
+
 }
