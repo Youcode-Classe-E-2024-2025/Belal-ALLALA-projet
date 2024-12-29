@@ -25,9 +25,8 @@ foreach ($todoTasks as $todoTask) {
             <span class="flex items-center h-6 px-3 text-xs font-semibold text-green-500 bg-gray-100 rounded-full">Non assigné</span>
          <?php endif; ?>
       </div>
-
       <a href="controllers/changeStatut.php?id=<?php echo $todoTask['id']; ?>" class="mt-3 w-full text-blue-500 px-3 py-1.5 rounded-md flex justify-center items-center">
-         <span class="text-xl font-semibold">change statut</span>
+         <span class="flex items-center h-6 px-3 text-xs font-semibold text-green-500 bg-green-100 rounded-full">change statut</span>
       </a>
    </div>
 <?php } ?>
