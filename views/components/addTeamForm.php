@@ -34,10 +34,10 @@
             <div class="flex items-center gap-2">
                <select name="type" id="members" class="selected-member block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                   <option value="">-- select a member --</option>
-                  <option value="karim">karim</option>
-                  <option value="ahmed">ahmed</option>
-                  <option value="ali">ali</option>
-                  <option value="ismail">ismail</option>
+                  <option value="1">karim</option>
+                  <option value="2">ahmed</option>
+                  <option value="3">ali</option>
+                  <option value="4">ismail</option>
                </select>
                <button type="button" class="add-member-btn p-1 bg-white/50 rounded-full border border-gray-200 shadow-md text-indigo-500 hover:bg-indigo-500 hover:text-indigo-100">
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
