@@ -671,7 +671,8 @@ class TeamMember
 
 
 
-class TaskUser {
+class TaskUser
+{
     private $db;
 
     public function __construct($db)
@@ -721,15 +722,16 @@ class TaskUser {
 
     public function getTasksByUser($id_user)
     {
-        $sql = "SELECT t.id, t.titre, t.description
-                    FROM task t
+        $sql = "SELECT t.id, t.titre, t.description, t.id_group
+                    FROM tasks t
                     INNER JOIN task_user tu ON t.id = tu.id_task
                     WHERE tu.id_user = ?";
         $stmt = $this->db->query($sql, [$id_user]);
         return $stmt->fetchAll();
     }
 
-    private function checkResult($stmt, $successMessage) {
+    private function checkResult($stmt, $successMessage)
+    {
         if ($stmt->rowCount() > 0) {
             return [
                 'success' => true,
@@ -742,10 +744,10 @@ class TaskUser {
         ];
     }
 
-    public function unassignAll($id_task) {
+    public function unassignAll($id_task)
+    {
         $sql = "DELETE FROM task_user WHERE id_task = ?";
         $stmt = $this->db->query($sql, [$id_task]);
         return $this->checkResult($stmt, 'Toutes les assignations pour cette tâche ont été supprimées avec succès.');
     }
-
 }
