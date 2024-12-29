@@ -54,6 +54,23 @@ const editForm = document.querySelector(".edit-task-form");
 editTaskBtns.forEach((btn) =>
 	btn?.addEventListener("click", function (e) {
 		editForm.classList.remove("hidden");
-		editForm.querySelector("input#id").value = "test";
+		const id = btn.id;
+		editForm.querySelector("input#id").value = id;
+		fetch(`http://localhost/controllers/task/get.php?action=getUser&id=${id}`)
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data);
+				console.log(data.deadline.split(" ")[0]);
+				console.log(data.deadline.split(" ")[1]);
+				console.log(data.type);
+
+				editForm.querySelector("#title").value = data.titre;
+				editForm.querySelector("#description").value = data.description;
+				editForm.querySelector("#date").value = data.deadline.split(" ")[0];
+				editForm.querySelector("#time").value = data.deadline.split(" ")[1];
+				editForm.querySelector("#statut").value = data.statut;
+				editForm.querySelector("#type").value = data.type;
+			})
+			.catch((error) => console.error(error));
 	})
 );
