@@ -9,10 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'edit') {
    $status = htmlspecialchars($_POST['statut']);
    $type = htmlspecialchars($_POST['type']);
    $id = (int) htmlspecialchars($_POST['id']);
-
-   // $id_group = $_POST['id_group'];
-   // $assignedTo  
-   // Task::getTask($id);
    $newTask = new Task($title, $description, $deadline, $status, $type, $id);
    $result = $newTask->update();
    if (!$result['success']) $error =  $result['message'];

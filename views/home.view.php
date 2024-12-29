@@ -3,7 +3,7 @@
 
       <h1 class="text-2xl font-bold">Team Project Board</h1>
       
-      <?php if ($admin_id===NULL || $admin_id===$user_id){ ?>
+      <?php if ($admin_id === $user_id || $group_id===NULL){ ?>
 
          <button class="add-task-btn text-[12px] flex items-center p-1 font-medium bg-white/50 rounded-full shadow-md text-indigo-500 hover:bg-indigo-500 hover:text-indigo-100">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -47,15 +47,19 @@
       <?php $teammodel = new TeamMember($db);
          $teams = $teammodel->getTeamsByUser($user_id);
       ?>
-
-      <select name="selectedTeam" id="selectedTeam" class="outline-none px-2 py-1 rounded-md">
-         <option value="NULL" selected>personal</option>
-         <?php
-            foreach ($teams as $team){
-               echo "<option value='".$team['id']."'>".$team['name']."</option>";
-            }
-         ?>
-      </select>
+       
+      <?php require "controllers/selectTeam.php"  ?>
+      <form method="post" class="flex justify-center " >
+         <select name="selectedTeam" id="selectedTeam" class="outline-none px-2 py-1 rounded-md">
+            <option value="" selected>personal</option>
+            <?php
+               foreach ($teams as $team) {
+                  echo "<option value='" . htmlspecialchars($team['id']) . "'>" . htmlspecialchars($team['name']) . "</option>";
+               }
+            ?>
+         </select>
+         <button type="submit" class="member-btn text-[12px] flex items-center p-1 font-medium bg-white/50 rounded-full shadow-md text-indigo-500 hover:bg-indigo-500 hover:text-indigo-100">Select</button>
+      </form>
 
    </div>
    <div class="flex flex-grow px-10 mt-4 space-x-6 overflow-auto">

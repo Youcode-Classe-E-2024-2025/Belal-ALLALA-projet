@@ -8,7 +8,6 @@
     ob_start(); 
     require "views/home.view.php";
     require "views/components/addTaskForm.php";
-    require "views/components/editTaskForm.php";
     require "views/components/addTeamForm.php";
     require "views/components/addmember.php";
     require "views/components/members.php";
