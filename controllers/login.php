@@ -7,12 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
    if (!$result['success']) {
       $error = $result['message'];
-      // dd($error);
    } else {
-
-      // obtenir id de base de donnes
       $_SESSION['id'] = $result['id'];
-      // dd($_SESSION);
+      $_SESSION['id_group'] = NULL;
+      $_SESSION['id_admin'] = NULL;
       header('Location: /home');
    }
 }

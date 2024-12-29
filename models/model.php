@@ -262,6 +262,28 @@ class User
     {
         return isset($_SESSION['id']);
     }
+
+    public static function getAllUsers()
+{
+    $sql = "SELECT * FROM users";
+    $stmt = (new Database())->query($sql);
+
+    $users = $stmt->fetchAll();
+    if ($users) {
+        return [
+            'success' => true,
+            'users' => $users,
+            'message' => 'Utilisateurs récupérés avec succès.'
+        ];
+    }
+
+    return [
+        'success' => false,
+        'users' => [],
+        'message' => 'Aucun utilisateur trouvé.'
+    ];
+}
+
 }
 
 
@@ -287,6 +309,7 @@ class Team
         $params = [$this->name, $this->adminId];
         $stmt = $this->db->query($sql, $params);
         if ($stmt->rowCount() > 0) {
+            $teamId = $this->db->getLastInsertId();
             return [
                 'success' => true,
                 'message' => 'Équipe créée avec succès.'
@@ -393,7 +416,7 @@ class Task
 
     public function create(array $data)
     {
-        $sql = "INSERT INTO task (titre, description, deadline, statut, type, id_group, created_at, updated_at) 
+        $sql = "INSERT INTO tasks (titre, description, deadline, statut, type, id_group, created_at, updated_at) 
                     VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())";
         $params = [
             $data['titre'],
@@ -422,7 +445,7 @@ class Task
 
     public function update(array $data)
     {
-        $sql = "UPDATE task SET titre = ?, description = ?, deadline = ?, statut = ?, type = ?, id_group = ?, updated_at = NOW() 
+        $sql = "UPDATE tasks SET titre = ?, description = ?, deadline = ?, statut = ?, type = ?, id_group = ?, updated_at = NOW() 
                     WHERE id = ?";
         $params = [
             $data['titre'],
@@ -449,7 +472,7 @@ class Task
 
     public function delete($id)
     {
-        $sql = "DELETE FROM task WHERE id = ?";
+        $sql = "DELETE FROM tasks WHERE id = ?";
         $stmt = $this->db->query($sql, [$id]);
         if ($stmt->rowCount() > 0) {
             return [
@@ -667,8 +690,8 @@ class TaskUser {
 
     public function getTasksByUser($id_user)
     {
-        $sql = "SELECT t.id, t.titre, t.description
-                    FROM task t
+        $sql = "SELECT t.id, t.titre, t.description, t.deadline, t.id_group
+                    FROM tasks t
                     INNER JOIN task_user tu ON t.id = tu.id_task
                     WHERE tu.id_user = ?";
         $stmt = $this->db->query($sql, [$id_user]);

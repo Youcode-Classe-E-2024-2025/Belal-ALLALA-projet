@@ -4,6 +4,8 @@ const addTeamBtn = document.querySelector(".add-team-btn");
 const addTeamForm = document.querySelector(".add-team-form");
 
 addTeamBtn?.addEventListener("click", function (e) {
+	console.log('click');
+	
 	addTeamForm.classList.remove("hidden");
 });
 
@@ -15,8 +17,8 @@ const selectedMember = document.querySelector("select.selected-member");
 const membersContainer = addTeamForm?.querySelector(".members");
 
 addMemberBtn?.addEventListener("click", function (e) {
-	// console.log(teamMembers);
-	teamMembers.push(selectedMember.value);
+	console.log(selectedMember.textContent);
+	teamMembers.push(selectedMember.textContent);
 	membersContainer.innerHTML = teamMembers.map((member) => `<li>${member}</li>`).join("");
 });
 
