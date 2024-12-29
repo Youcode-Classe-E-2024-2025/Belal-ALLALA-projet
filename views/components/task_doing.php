@@ -3,9 +3,6 @@
 ?>
       <div id="3" class="task relative flex flex-col items-start p-4 mt-3 bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-opacity-100" draggable="true">
          <div class="absolute top-0 right-0 text-gray-500 flex gap-2 pt-1 pr-1">
-            <button class="edit-task-btn active:scale-90">
-               <i class="fa-solid fa-pen text-sm"></i>
-            </button>
             <a href="controllers/delete_task.php?id=<?php echo $doingTask['id'] ?>" class="delete-task-btn  active:scale-90" onclick="return confirm('Vouler vous vraiment supprimer cette tache')">
                <i class="fa-solid fa-xmark"></i>
             </a>
@@ -19,7 +16,17 @@
                </svg>
                <span class="ml-1 leading-none"><?php echo $doingTask['deadline'] ?></span>
             </div>
-            <img class="w-6 h-6 ml-auto rounded-full" src='https://randomuser.me/api/portraits/women/26.jpg' />
+            <?php $users = Task::getUsersByTaskId($doingTask['id'], $db); ?>
+            <?php if (!empty($users)): ?> 
+               <span class="flex items-center h-6 px-3 text-xs font-semibold text-green-500 bg-gray-100 rounded-full">
+                  <?php echo $users['name'] ?>
+               </span>
+            <?php else: ?>
+               <span class="flex items-center h-6 px-3 text-xs font-semibold text-green-500 bg-gray-100 rounded-full">Non assigné</span>
+            <?php endif; ?>
          </div>
+         <a href="controllers/changeStatut.php?id=<?php echo $doingTask['id']; ?>" class="mt-3 w-full text-blue-500 px-3 py-1.5 rounded-md flex justify-center items-center">
+         <span class="text-xl font-semibold">change statut</span>
+      </a>
       </div>
 <?php } ?>

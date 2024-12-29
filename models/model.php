@@ -160,10 +160,10 @@ class User
     }
 
 
-    public function getUserById()
+    public function getUserById($id)
     {
         $sql = "SELECT * FROM users WHERE id = ?";
-        $params = [$this->id];
+        $params = [$id];
         $stmt = $this->db->query($sql, $params);
 
         $user = $stmt->fetch();
@@ -368,15 +368,13 @@ class Team
         ];
     }
 
-    public function getTeamById()
+    public static function getTeamById($id, $db)
     {
         $sql = "SELECT * FROM teams WHERE id = ?";
-        $params = [$this->id];
-        $stmt = $this->db->query($sql, $params);
+        $params = [$id];
+        $stmt = $db->query($sql, $params);
         $team = $stmt->fetch();
         if ($team) {
-            $this->name = $team['name'];
-            $this->adminId = $team['id_admin'];
             return [
                 'success' => true,
                 'data' => $team,
@@ -406,6 +404,7 @@ class Team
             'message' => 'Aucune équipe trouvée.'
         ];
     }
+    
 }
 
 
@@ -421,7 +420,7 @@ class Task
     private $updatedAt;
     private $db;
 
-    public function __construct($titre, $description, $deadline, $statut, $type, $id = null, $idGroup = null)
+    public function __construct($titre, $description, $deadline, $statut, $type, $idGroup, $id = null)
     {
         $this->db = new Database();
         $this->titre = $titre;
@@ -449,10 +448,11 @@ class Task
             $stmt = $this->db->query($sql, $params);
 
             if ($stmt->rowCount() > 0) {
+                $taskId = $this->db->getLastInsertId();
                 return [
                     'success' => true,
                     'message' => 'Tâche créée avec succès.',
-                    'id' => $this->db->connection->lastInsertId()
+                    'id' => $taskId  
                 ];
             }
         } catch (\Throwable $th) {
@@ -496,7 +496,7 @@ class Task
             if ($task === false) {
                 echo "No user found with ID $id.";
             } else {
-                return $task; // Affiche les données utilisateur
+                return $task; 
             }
         } catch (PDOException $e) {
             echo "Database query error: " . $e->getMessage();
@@ -537,10 +537,10 @@ class Task
         }
     }
 
-    public function delete($id)
+    public static function delete($id ,$db)
     {
         $sql = "DELETE FROM tasks WHERE id = ?";
-        $stmt = $this->db->query($sql, [$id]);
+        $stmt = $db->query($sql, [$id]);
         if ($stmt->rowCount() > 0) {
             return [
                 'success' => true,
@@ -607,6 +607,158 @@ class Task
             'success' => false,
             'message' => 'Aucun utilisateur assigné trouvé pour cette tâche.'
         ];
+    }
+    public static function getTasksByGroupId($idGroup,$db)
+    {
+        $sql = "SELECT * FROM tasks WHERE id_group = ?";
+        $params = [$idGroup];
+
+        try {
+            $stmt = $db->query($sql, $params);
+            $tasks = $stmt->fetchAll();
+
+            if (!empty($tasks)) {
+                return [
+                    'success' => true,
+                    'data' => $tasks,
+                    'message' => 'Tâches récupérées avec succès.'
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => 'Aucune tâche trouvée pour ce groupe.'
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des tâches : ' . $th->getMessage()
+            ];
+        }
+    }
+
+    public static function getTasksAssignedToUserInGroup($user_id, $group_id, $db)
+    {
+        $sql = "SELECT t.* 
+                FROM tasks t
+                INNER JOIN task_user tu ON t.id = tu.id_task
+                WHERE tu.id_user = ? AND t.id_group = ?";
+        $params = [$user_id, $group_id];
+
+        try {
+            $stmt = $db->query($sql, $params);
+            $tasks = $stmt->fetchAll();
+
+            if (!empty($tasks)) {
+                return $tasks; 
+            }
+
+            return []; 
+
+        } catch (\Throwable $th) {
+            error_log("Erreur lors de la récupération des tâches : " . $th->getMessage());  
+            return []; 
+        }
+    }
+
+    public static function getTasksWithoutGroupAssignedToUser($user_id, $db)
+    {
+        $sql = "SELECT t.* 
+                FROM tasks t
+                INNER JOIN task_user tu ON t.id = tu.id_task
+                WHERE tu.id_user = ? AND t.id_group IS NULL";
+        $params = [$user_id];
+
+        try {
+            $stmt = $db->query($sql, $params);
+            $tasks = $stmt->fetchAll();
+                return $tasks;
+
+        } catch (\Throwable $th) {
+            error_log("Erreur lors de la récupération des tâches : " . $th->getMessage());
+            return [];
+        }
+    }
+
+    public static function getUsersByTaskId($task_id, $db)
+    {
+        $sql = "SELECT u.*
+                FROM users u
+                INNER JOIN task_user tu ON u.id = tu.id_user
+                WHERE tu.id_task = ?";
+        $params = [$task_id];
+
+        try {
+            $stmt = $db->query($sql, $params);
+            $users = $stmt->fetch(); 
+            return $users;
+        } catch (\Throwable $th) {
+             error_log("Erreur lors de la récupération des utilisateurs : " . $th->getMessage());
+            return [];
+        }
+    }
+    public static function toggleStatus($task_id, $db) {
+        try {
+            // 1. Récupérer le statut actuel de la tâche
+            $currentStatus = self::getStatus($task_id, $db); // Appel statique de getStatus
+
+            if ($currentStatus === false) {
+                return [
+                    'success' => false,
+                    'message' => 'Tâche non trouvée.'
+                ];
+            }
+
+            // 2. Déterminer le nouveau statut (inchangé)
+            $newStatus = match ($currentStatus) {
+                'Todo' => 'Doing',
+                'Doing' => 'Done',
+                'Done' => 'Todo',
+                default => 'Todo' 
+            };
+
+            // 3. Mettre à jour le statut dans la base de données
+            $sql = "UPDATE tasks SET statut = ?, updated_at = NOW() WHERE id = ?";
+            $stmt = $db->query($sql, [$newStatus, $task_id]);
+
+            if ($stmt->rowCount() > 0) {
+                return [
+                    'success' => true,
+                    'message' => 'Statut de la tâche mis à jour avec succès.',
+                    'newStatus' => $newStatus
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Erreur lors de la mise à jour du statut de la tâche.'
+                ];
+            }
+
+        } catch (\Throwable $th) {
+            // Gérer les erreurs de la base de données
+            error_log("Erreur lors du basculement du statut : " . $th->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Erreur : ' . $th->getMessage()
+            ];
+        }
+    }
+
+    protected static function getStatus($task_id, $db) // getStatus est maintenant statique
+    {
+        try {
+            $sql = "SELECT statut FROM tasks WHERE id = ?";
+            $stmt = $db->query($sql, [$task_id]);
+
+            if ($task = $stmt->fetch()) {
+                return $task['statut'];
+            }
+            return false;
+
+        } catch (\Throwable $th) {
+            error_log("Erreur lors de la récupération du statut : " . $th->getMessage());
+            return false;
+        }
     }
 }
 
@@ -758,7 +910,7 @@ class TaskUser
 
     public function getTasksByUser($id_user)
     {
-        $sql = "SELECT t.id, t.titre, t.description, t.deadline, t.id_group
+        $sql = "SELECT t.id, t.titre, t.description, t.deadline, t.id_group, t.statut, t.type
                     FROM tasks t
                     INNER JOIN task_user tu ON t.id = tu.id_task
                     WHERE tu.id_user = ?";

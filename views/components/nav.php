@@ -6,7 +6,7 @@
    <div class="ml-auto flex items-center gap-6">
       <a class="font-semibold  text-gray-500 hover:text-indigo-700 <?= checkURL("/") || checkURL("/home") ? "text-indigo-700" : "" ?>" href="/">home</a>
       <?php if (User::isLoggedIn()) : ?>
-         <a class="font-semibold text-white bg-indigo-700 rounded px-2 py-1" href="/logout">logout</a>
+         <a class="font-semibold text-gray-500 hover:text-indigo-700 <?= checkURL("/signup") ? "text-indigo-700" : "" ?>" href="/logout">logout</a>
       <?php else: ?>
          <a class="font-semibold text-gray-500 hover:text-indigo-700 <?= checkURL("/signup") ? "text-indigo-700" : "" ?>" href="/signup">signup</a>
          <a class="font-semibold text-gray-500 hover:text-indigo-700 <?= checkURL("/login") ? "text-indigo-700" : "" ?>" href="/login">login</a>
