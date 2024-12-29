@@ -23,6 +23,11 @@ class Database
             dd($th->getMessage());
         }
     }
+
+    public function getLastInsertId()
+    {
+        return $this->connection->lastInsertId();
+    }
 }
 
 class Validator
@@ -268,25 +273,24 @@ class User
     }
 
     public static function getAllUsers()
-{
-    $sql = "SELECT * FROM users";
-    $stmt = (new Database())->query($sql);
+    {
+        $sql = "SELECT * FROM users";
+        $stmt = (new Database())->query($sql);
+        $users = $stmt->fetchAll();
+        if ($users) {
+            return [
+                'success' => true,
+                'users' => $users,
+                'message' => 'Utilisateurs récupérés avec succès.'
+            ];
+        }
 
-    $users = $stmt->fetchAll();
-    if ($users) {
         return [
-            'success' => true,
-            'users' => $users,
-            'message' => 'Utilisateurs récupérés avec succès.'
+            'success' => false,
+            'users' => [],
+            'message' => 'Aucun utilisateur trouvé.'
         ];
     }
-
-    return [
-        'success' => false,
-        'users' => [],
-        'message' => 'Aucun utilisateur trouvé.'
-    ];
-}
 
     public static function isPersonal()
     {
@@ -317,9 +321,10 @@ class Team
         $params = [$this->name, $this->adminId];
         $stmt = $this->db->query($sql, $params);
         if ($stmt->rowCount() > 0) {
-            $teamId = $this->db->getLastInsertId();
+            $teamId = $this->db->getLastInsertId(); 
             return [
                 'success' => true,
+                'teamId' => $teamId,
                 'message' => 'Équipe créée avec succès.'
             ];
         }
@@ -460,7 +465,6 @@ class Task
 
     public static function getTask($id)
     {
-<<<<<<< HEAD
         $sql = "UPDATE tasks SET titre = ?, description = ?, deadline = ?, statut = ?, type = ?, id_group = ?, updated_at = NOW() 
                     WHERE id = ?";
         $params = [
@@ -478,13 +482,6 @@ class Task
                 'success' => true,
                 'message' => 'Tâche mise à jour avec succès.'
             ];
-=======
-        $db = (new Database())->connection;
-
-        // Vérification de la connexion
-        if (!$db) {
-            die("Database connection not established.");
->>>>>>> 0f7c544fe7f3c252e764245739bd3e77e8afcac6
         }
 
         $query = "SELECT * FROM tasks WHERE id = ?";
@@ -521,8 +518,6 @@ class Task
         try {
             $stmt = $this->db->connection->prepare($sql);
             $stmt->execute($params);
-
-            // Vérifie le nombre de lignes affectées
             if ($stmt->rowCount() > 0) {
                 return [
                     'success' => true,
@@ -535,7 +530,6 @@ class Task
                 ];
             }
         } catch (\Throwable $th) {
-            // Gère les erreurs
             return [
                 'success' => false,
                 'message' => 'Erreur lors de la mise à jour de la tâche : ' . $th->getMessage()
@@ -764,11 +758,7 @@ class TaskUser
 
     public function getTasksByUser($id_user)
     {
-<<<<<<< HEAD
         $sql = "SELECT t.id, t.titre, t.description, t.deadline, t.id_group
-=======
-        $sql = "SELECT t.id, t.titre, t.description, t.id_group
->>>>>>> 0f7c544fe7f3c252e764245739bd3e77e8afcac6
                     FROM tasks t
                     INNER JOIN task_user tu ON t.id = tu.id_task
                     WHERE tu.id_user = ?";

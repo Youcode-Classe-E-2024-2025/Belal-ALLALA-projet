@@ -1,12 +1,10 @@
 <?php
-    require_once 'models/model.php';
-    require_once 'config/database.php';
 
-    $id = 2;
+    $id = $user_id;
     $taskUser = new TaskUser($db);
     $allTasks = $taskUser->getTasksByUser($id); 
 
-    $personalTasks = []; 
+    $Tasks = []; 
     $todoTasks = [];
     $doneTasks = [];
     $doingTasks = [];
@@ -14,8 +12,8 @@
 
     if ($allTasks) {
         foreach ($allTasks as $task) {
-            if ($task['id_group'] === null) { 
-                $personalTasks[] = $task;
+            if ($task['id_group'] === $group_id) { 
+                $Tasks[] = $task;
                 switch ($task['statut']) { 
                     case 'Todo':
                         $todoTasks[] = $task;

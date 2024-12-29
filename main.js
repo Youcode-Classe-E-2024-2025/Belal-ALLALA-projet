@@ -3,24 +3,36 @@
 const addTeamBtn = document.querySelector(".add-team-btn");
 const addTeamForm = document.querySelector(".add-team-form");
 
+const addmemberBtn = document.querySelector(".add-member-btn");
+const addmemberForm = document.querySelector(".add-member-form");
+
+const memberBtn = document.querySelector(".member-btn");
+const memberForm = document.querySelector(".member-form");
+
 addTeamBtn?.addEventListener("click", function (e) {
-	console.log('click');
-	
 	addTeamForm.classList.remove("hidden");
 });
 
-// add members
-const teamMembers = [];
-
-const addMemberBtn = document.querySelector(".add-member-btn");
-const selectedMember = document.querySelector("select.selected-member");
-const membersContainer = addTeamForm?.querySelector(".members");
-
-addMemberBtn?.addEventListener("click", function (e) {
-	console.log(selectedMember.textContent);
-	teamMembers.push(selectedMember.textContent);
-	membersContainer.innerHTML = teamMembers.map((member) => `<li>${member}</li>`).join("");
+addmemberBtn?.addEventListener("click", function (e) {
+	addmemberForm.classList.remove("hidden");
 });
+
+memberBtn?.addEventListener("click", function (e) {
+	memberForm.classList.remove("hidden");
+});
+
+// add members
+// const teamMembers = [];
+
+// const addMemberBtn = document.querySelector(".add-member-btn");
+// const selectedMember = document.querySelector("select.selected-member");
+// const membersContainer = addTeamForm?.querySelector(".members");
+
+// addMemberBtn?.addEventListener("click", function (e) {
+// 	console.log(selectedMember.textContent);
+// 	teamMembers.push(selectedMember.textContent);
+// 	membersContainer.innerHTML = teamMembers.map((member) => `<li>${member}</li>`).join("");
+// });
 
 // close the form
 const closeBtns = document.querySelectorAll(".close-btn");
