@@ -895,10 +895,10 @@ class TaskUser
     {
         $sql = "SELECT * FROM task_user WHERE id_task = ? AND id_user = ?";
         $stmt = $this->db->query($sql, [$id_task, $id_user]);
-        return $stmt->rowCount() > 0;
+        // return $stmt->rowCount() > 0;
     }
 
-    // public function getUsersByTask($id_task)
+    public function getUsersByTask($id_task)
     {
         $sql = "SELECT u.id, u.name, u.email
                     FROM users u
