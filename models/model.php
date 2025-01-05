@@ -915,10 +915,10 @@ class TaskUser
                     INNER JOIN task_user tu ON t.id = tu.id_task
                     WHERE tu.id_user = ?";
         $stmt = $this->db->query($sql, [$id_user]);
-        return $stmt->fetchAll();
+        // return $stmt->fetchAll();
     }
 
-    // private function checkResult($stmt, $successMessage)
+    private function checkResult($stmt, $successMessage)
     {
         if ($stmt->rowCount() > 0) {
             return [
