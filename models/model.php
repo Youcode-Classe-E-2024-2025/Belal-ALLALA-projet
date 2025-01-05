@@ -928,11 +928,11 @@ class TaskUser
         }
         return [
             'success' => false,
-            'message' => 'Erreur lors de l\'opération sur l\'assignation de la tâche.'
+            // 'message' => 'Erreur lors de l\'opération sur l\'assignation de la tâche.'
         ];
     }
 
-    // public function unassignAll($id_task)
+    public function unassignAll($id_task)
     {
         $sql = "DELETE FROM task_user WHERE id_task = ?";
         $stmt = $this->db->query($sql, [$id_task]);
