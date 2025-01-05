@@ -905,10 +905,10 @@ class TaskUser
                     INNER JOIN task_user tu ON u.id = tu.id_user
                     WHERE tu.id_task = ?";
         $stmt = $this->db->query($sql, [$id_task]);
-        return $stmt->fetchAll();
+        // return $stmt->fetchAll();
     }
 
-    // public function getTasksByUser($id_user)
+    public function getTasksByUser($id_user)
     {
         $sql = "SELECT t.id, t.titre, t.description, t.deadline, t.id_group, t.statut, t.type
                     FROM tasks t
