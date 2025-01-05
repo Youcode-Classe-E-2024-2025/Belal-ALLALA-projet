@@ -923,11 +923,11 @@ class TaskUser
         if ($stmt->rowCount() > 0) {
             return [
                 'success' => true,
-                'message' => $successMessage
+                // 'message' => $successMessage
             ];
         }
         return [
-            // 'success' => false,
+            'success' => false,
             'message' => 'Erreur lors de l\'opération sur l\'assignation de la tâche.'
         ];
     }
