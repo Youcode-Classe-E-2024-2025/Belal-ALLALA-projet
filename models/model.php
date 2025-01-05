@@ -865,10 +865,10 @@ class TaskUser
 
     public function __construct($db)
     {
-        $this->db = $db;
+        // $this->db = $db;
     }
 
-    // public function assign($id_task, $id_user)
+    public function assign($id_task, $id_user)
     {
         if ($this->isAssigned($id_task, $id_user)) {
             return [
