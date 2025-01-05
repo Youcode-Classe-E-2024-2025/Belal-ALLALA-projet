@@ -863,9 +863,9 @@ class TaskUser
 {
     private $db;
 
-    public function __construct($db)
+    // public function __construct($db)
     {
-        // $this->db = $db;
+        $this->db = $db;
     }
 
     public function assign($id_task, $id_user)
