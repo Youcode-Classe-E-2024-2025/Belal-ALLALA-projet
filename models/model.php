@@ -871,8 +871,8 @@ class TaskUser
     public function assign($id_task, $id_user)
     {
         if ($this->isAssigned($id_task, $id_user)) {
-            return [
-                // 'success' => false,
+            // return [
+                'success' => false,
                 'message' => 'L\'utilisateur est déjà assigné à cette tâche.'
             ];
         }
