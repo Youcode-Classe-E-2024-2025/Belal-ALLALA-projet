@@ -883,9 +883,9 @@ class TaskUser
         return $this->checkResult($stmt, 'Utilisateur assigné à la tâche avec succès.');
     }
 
-    public function unassign($id_task, $id_user)
+    // public function unassign($id_task, $id_user)
     {
-        // $sql = "DELETE FROM task_user WHERE id_task = ? AND id_user = ?";
+        $sql = "DELETE FROM task_user WHERE id_task = ? AND id_user = ?";
         $stmt = $this->db->query($sql, [$id_task, $id_user]);
 
         return $this->checkResult($stmt, 'Utilisateur désassigné de la tâche avec succès.');
