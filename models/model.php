@@ -888,10 +888,10 @@ class TaskUser
         $sql = "DELETE FROM task_user WHERE id_task = ? AND id_user = ?";
         $stmt = $this->db->query($sql, [$id_task, $id_user]);
 
-        return $this->checkResult($stmt, 'Utilisateur désassigné de la tâche avec succès.');
+        // return $this->checkResult($stmt, 'Utilisateur désassigné de la tâche avec succès.');
     }
 
-    // public function isAssigned($id_task, $id_user)
+    public function isAssigned($id_task, $id_user)
     {
         $sql = "SELECT * FROM task_user WHERE id_task = ? AND id_user = ?";
         $stmt = $this->db->query($sql, [$id_task, $id_user]);
