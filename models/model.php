@@ -913,8 +913,8 @@ class TaskUser
         $sql = "SELECT t.id, t.titre, t.description, t.deadline, t.id_group, t.statut, t.type
                     FROM tasks t
                     INNER JOIN task_user tu ON t.id = tu.id_task
-                    WHERE tu.id_user = ?";
-        // $stmt = $this->db->query($sql, [$id_user]);
+                    -- WHERE tu.id_user = ?";
+        $stmt = $this->db->query($sql, [$id_user]);
         return $stmt->fetchAll();
     }
 
