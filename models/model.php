@@ -900,8 +900,8 @@ class TaskUser
 
     public function getUsersByTask($id_task)
     {
-        $sql = "SELECT u.id, u.name, u.email
-                    -- FROM users u
+        // $sql = "SELECT u.id, u.name, u.email
+                    FROM users u
                     INNER JOIN task_user tu ON u.id = tu.id_user
                     WHERE tu.id_task = ?";
         $stmt = $this->db->query($sql, [$id_task]);
