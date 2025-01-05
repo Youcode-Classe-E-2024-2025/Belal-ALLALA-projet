@@ -898,9 +898,9 @@ class TaskUser
         return $stmt->rowCount() > 0;
     }
 
-    public function getUsersByTask($id_task)
+    // public function getUsersByTask($id_task)
     {
-        // $sql = "SELECT u.id, u.name, u.email
+        $sql = "SELECT u.id, u.name, u.email
                     FROM users u
                     INNER JOIN task_user tu ON u.id = tu.id_user
                     WHERE tu.id_task = ?";
