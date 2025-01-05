@@ -873,11 +873,11 @@ class TaskUser
         if ($this->isAssigned($id_task, $id_user)) {
             return [
                 'success' => false,
-                'message' => 'L\'utilisateur est déjà assigné à cette tâche.'
+                // 'message' => 'L\'utilisateur est déjà assigné à cette tâche.'
             ];
         }
 
-        // $sql = "INSERT INTO task_user (id_task, id_user, assigned_at) VALUES (?, ?, NOW())";
+        $sql = "INSERT INTO task_user (id_task, id_user, assigned_at) VALUES (?, ?, NOW())";
         $stmt = $this->db->query($sql, [$id_task, $id_user]);
 
         return $this->checkResult($stmt, 'Utilisateur assigné à la tâche avec succès.');
