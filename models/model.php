@@ -935,7 +935,7 @@ class TaskUser
     public function unassignAll($id_task)
     {
         $sql = "DELETE FROM task_user WHERE id_task = ?";
-        $stmt = $this->db->query($sql, [$id_task]);
-        // return $this->checkResult($stmt, 'Toutes les assignations pour cette tâche ont été supprimées avec succès.');
+        // $stmt = $this->db->query($sql, [$id_task]);
+        return $this->checkResult($stmt, 'Toutes les assignations pour cette tâche ont été supprimées avec succès.');
     }
 }
