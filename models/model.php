@@ -922,8 +922,8 @@ class TaskUser
     {
         if ($stmt->rowCount() > 0) {
             return [
-                'success' => true,
-                // 'message' => $successMessage
+                // 'success' => true,
+                'message' => $successMessage
             ];
         }
         return [
