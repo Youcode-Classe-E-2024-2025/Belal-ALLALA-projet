@@ -914,8 +914,8 @@ class TaskUser
                     FROM tasks t
                     INNER JOIN task_user tu ON t.id = tu.id_task
                     WHERE tu.id_user = ?";
-        $stmt = $this->db->query($sql, [$id_user]);
-        // return $stmt->fetchAll();
+        // $stmt = $this->db->query($sql, [$id_user]);
+        return $stmt->fetchAll();
     }
 
     private function checkResult($stmt, $successMessage)
