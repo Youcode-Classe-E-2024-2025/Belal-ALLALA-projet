@@ -918,11 +918,11 @@ class TaskUser
         return $stmt->fetchAll();
     }
 
-    private function checkResult($stmt, $successMessage)
+    // private function checkResult($stmt, $successMessage)
     {
         if ($stmt->rowCount() > 0) {
             return [
-                // 'success' => true,
+                'success' => true,
                 'message' => $successMessage
             ];
         }
