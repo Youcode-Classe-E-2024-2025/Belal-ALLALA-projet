@@ -4,5 +4,9 @@
 	},
 	"scripts": {
 		"start": "npx tailwindcss -i ./CSS/input.css -o ./CSS/output.css --watch"
+	},
+	"dependencies": {
+		"autoprefixer": "^10.4.20",
+		"postcss": "^8.4.49"
 	}
 }

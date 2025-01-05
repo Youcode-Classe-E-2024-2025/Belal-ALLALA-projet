@@ -49,8 +49,16 @@
       ?>
        
       <?php require "controllers/selectTeam.php"  ?>
-      <form method="post" class="flex justify-center " >
-         <select name="selectedTeam" id="selectedTeam" class="outline-none px-2 py-1 rounded-md">
+      <form method="post" class="flex justify-center space-x-2" >
+         <select name="selectedTeam" id="selectedTeam" data-select='{
+            "placeholder": "<span class=\"inline-flex items-center\"><span class=\"icon-[tabler--filter] flex-shrink-0 size-4 me-2\"></span> Filter</span>",
+            "toggleTag": "<button type=\"button\" aria-expanded=\"false\"></button>",
+            "toggleClasses": "advance-select-toggle",
+            "dropdownClasses": "advance-select-menu",
+            "optionClasses": "advance-select-option selected:active",
+            "optionTemplate": "<div class=\"flex justify-between items-center w-full\"><span data-title></span><span class=\"icon-[tabler--check] flex-shrink-0 size-4 text-primary hidden selected:block \"></span></div>",
+            "extraMarkup": "<span class=\"icon-[tabler--caret-up-down] flex-shrink-0 size-4 text-base-content absolute top-1/2 end-3 -translate-y-1/2 \"></span>"
+            }' class="outline-none px-2 py-1 rounded-md ">
             <option value="" selected>personal</option>
             <?php
                foreach ($teams as $team) {
@@ -58,47 +66,48 @@
                }
             ?>
          </select>
-         <button type="submit" class="member-btn text-[12px] flex items-center p-1 font-medium bg-white/50 rounded-full shadow-md text-indigo-500 hover:bg-indigo-500 hover:text-indigo-100">Select</button>
+         <button type="submit" class="member-btn text-[12px] flex items-center  font-medium bg-white/50 rounded-full shadow-md text-indigo-500 hover:bg-indigo-500 hover:text-indigo-100 px-4 ">Select</button>
       </form>
 
    </div>
    <div class="flex flex-grow px-10 mt-4 space-x-6 overflow-auto">
       <?php require_once 'controllers/task.php' ?>
-      <div id="todo" class="flex flex-col flex-shrink-0 flex-1">
-         <div class="flex items-center flex-shrink-0 h-10 px-2">
+      <div id="todo" class="flex flex-col flex-shrink-0 flex-1 border border-4 rounded-lg border-white ">
+         <div class="flex items-center justify-center flex-shrink-0 h-10 px-2 ">
             <span class="block text-sm font-semibold">Todo</span>
             <span class="flex items-center justify-center w-5 h-5 ml-2 text-sm font-semibold text-indigo-500 bg-white rounded bg-opacity-30"><?php echo count($todoTasks) ?></span>
          </div>
-         <div class="flex flex-col pb-2 overflow-auto">
+         <div class="flex flex-col pb-2 overflow-auto p-4 ">
             <?php require 'views/components/task_todo.php' ?>
          </div>
       </div>
-      <div id="doing" class="flex flex-col flex-shrink-0 flex-1">
+      <div id="doing" class="flex flex-col flex-shrink-0 flex-1 border border-4 rounded-lg border-white">
 
-         <div class="flex items-center flex-shrink-0 h-10 px-2">
+         <div class="flex items-center flex-shrink-0 h-10 px-2 justify-center">
             <span class="block text-sm font-semibold">doing</span>
             <span class="flex items-center justify-center w-5 h-5 ml-2 text-sm font-semibold text-indigo-500 bg-white rounded bg-opacity-30"><?php echo count($doingTasks) ?></span>
          </div>
 
-         <div class="flex flex-col pb-2 overflow-auto">
+         <div class="flex flex-col pb-2 overflow-auto p-4">
             <?php require 'views/components/task_doing.php' ?>
          </div>
 
       </div>
-      <div id="done" class="flex flex-col flex-shrink-0 flex-1">
+      <div id="done" class="flex flex-col flex-shrink-0 flex-1 border border-4 rounded-lg border-white ">
 
-         <div class="flex items-center flex-shrink-0 h-10 px-2">
+         <div class="flex items-center flex-shrink-0 h-10 px-2 justify-center">
             <span class="block text-sm font-semibold">done</span>
             <span class="flex items-center justify-center w-5 h-5 ml-2 text-sm font-semibold text-indigo-500 bg-white rounded bg-opacity-30"><?php echo count($doneTasks) ?></span>
          </div>
 
-         <div class="flex flex-col pb-2 overflow-auto">
+         <div class="flex flex-col pb-2 overflow-auto p-4">
             <?php require 'views/components/task_done.php' ?>
          </div>
 
       </div>
    </div>
 </div>
+
 </body>
 
 </html>
