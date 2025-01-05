@@ -927,8 +927,8 @@ class TaskUser
             ];
         }
         return [
-            'success' => false,
-            // 'message' => 'Erreur lors de l\'opération sur l\'assignation de la tâche.'
+            // 'success' => false,
+            'message' => 'Erreur lors de l\'opération sur l\'assignation de la tâche.'
         ];
     }
 
