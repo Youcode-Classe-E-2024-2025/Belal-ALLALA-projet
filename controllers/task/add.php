@@ -10,6 +10,14 @@
       $newTask = new Task($title, $description, $deadline, $status, $type, $group_id);
       $result = $newTask->create();
       if ($result['success']){
+         
+		   if(isset($_POST['categories']) && is_array($_POST['categories'])) {
+			   $categoryTaskModel = new CategoryTask($db);
+			   foreach ($_POST['categories'] as $categoryId) {
+				   $categoryTaskModel->add($categoryId, $result['id']);
+			   }
+		   }
+
          if(isset($_POST['assignedTo'])){
             $assignedTo =$_POST['assignedTo'];
             $newTask->assignUser($result['id'], $assignedTo);

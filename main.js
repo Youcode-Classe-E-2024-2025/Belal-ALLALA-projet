@@ -90,29 +90,16 @@ assignedTo?.addEventListener("change", function (e) {
 
 document.querySelectorAll('.task-icon').forEach(icon => {
     icon.addEventListener('click', function(event) {
-        // Empêcher le comportement par défaut et la propagation
         event.preventDefault();
         event.stopPropagation();
-
-        // Récupérer l'élément parent de l'icône contenant l'input task_id
         let taskDiv = icon.closest('.task');
         let taskId = taskDiv.querySelector('input[name="task_id"]').value;
-
-        // Afficher l'ID de la tâche dans la console
-        console.log('ID de la tâche:', taskId);
-
-        // Récupérer la section associée
         let section = document.getElementById('hiddenSection'+taskId);
         if (!section) {
             console.warn(`Section avec l'ID 'hiddenSection${taskId}' introuvable.`);
             return;
         }
-
-        // Basculer la visibilité de la section
         section.classList.toggle('hidden');
-
-        // Ajouter un écouteur pour fermer la section
-        document.addEventListener('click', closeSection);
     });
 });
 

@@ -31,7 +31,34 @@
                <input type="time" name="time" id="deadline" required class="flex-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm">
             </div>
          </div>
-
+         <div>
+            <label for="categories" class="block text-sm font-medium text-gray-900">Catégories</label>
+            <select name="categories[]" id="categories"  multiple>
+               <?php
+					   $categoryModel = new Category($db);
+                  $categories = $categoryModel->getAll();
+                  if ($categories['success']) {
+                     foreach ($categories['data'] as $category) {
+                        echo "<option value='" . $category['id'] . "'>" . $category['name'] . "</option>";
+                     }
+                  }
+               ?>
+            </select>
+            <script>
+               new MultiSelectTag('categories', {
+                  rounded: true,    // default true
+                  shadow: true,      // default false
+                  placeholder: 'Search',  // default Search...
+                  tagColor: {
+                     textColor: '#327b2c',
+                     borderColor: '#92e681',
+                     bgColor: '#eaffe6',
+                  },
+                  onChange: function(values) {
+                  console.log(values)
+               }})  
+            </script>
+         </div>
          <div>
             <label for="statut" class="block text-sm font-medium text-gray-900">status</label>
             <select name="statut" id="statut" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm">
@@ -70,6 +97,7 @@
 
          <?php } ?>
 
+         
          <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" name="addTask">Add task</button>
       </form>
    </div>

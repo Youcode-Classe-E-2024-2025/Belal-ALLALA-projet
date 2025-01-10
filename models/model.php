@@ -858,7 +858,6 @@ class TeamMember
 }
 
 
-
 class TaskUser
 {
     private $db;
@@ -938,4 +937,195 @@ class TaskUser
         $stmt = $this->db->query($sql, [$id_task]);
         return $this->checkResult($stmt, 'Toutes les assignations pour cette tâche ont été supprimées avec succès.');
     }
+}
+
+class Category
+{
+    private $db;
+
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
+
+    public function getAll()
+    {
+        $sql = "SELECT * FROM categories";
+        $stmt = $this->db->query($sql);
+        $categories = $stmt->fetchAll();
+
+        if (!empty($categories)) {
+            return [
+                'success' => true,
+                'data' => $categories,
+                'message' => 'Catégories récupérées avec succès.'
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => 'Aucune catégorie trouvée.'
+        ];
+    }
+
+
+    public function create($name) {
+        // Vérifier si une catégorie avec le même nom existe déjà
+        $existingCategory = $this->getByName($name);
+        if ($existingCategory['success']) {
+            return [
+                'success' => false,
+                'message' => 'Une catégorie avec ce nom existe déjà.'
+            ];
+        }
+
+        $sql = "INSERT INTO categories (name) VALUES (?)";
+        $stmt = $this->db->query($sql, [$name]);
+
+        if ($stmt->rowCount() > 0) {
+            return [
+                'success' => true,
+                'message' => 'Catégorie créée avec succès.',
+				'id' => $this->db->getLastInsertId()
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => 'Erreur lors de la création de la catégorie.'
+        ];
+    }
+
+
+	public function getByName($name) {
+        $sql = "SELECT * FROM categories WHERE name = ?";
+        $stmt = $this->db->query($sql, [$name]);
+        $category = $stmt->fetch();
+
+        if ($category) {
+            return [
+                'success' => true,
+                'data' => $category,
+                'message' => 'Catégorie trouvée.'
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => 'Catégorie non trouvée.'
+        ];
+    }
+
+
+    public function update($id, $name)
+	{
+		$sql = "UPDATE categories SET name = ? WHERE id = ?";
+		$stmt = $this->db->query($sql, [$name, $id]);
+
+		if ($stmt->rowCount() > 0) {
+			return [
+				'success' => true,
+				'message' => 'Catégorie mise à jour avec succès.'
+			];
+		}
+
+		return [
+			'success' => false,
+			'message' => 'Erreur lors de la mise à jour de la catégorie ou aucune modification effectuée.'
+		];
+	}
+
+	public function delete($id)
+	{
+		$sql = "DELETE FROM categories WHERE id = ?";
+		$stmt = $this->db->query($sql, [$id]);
+
+		if ($stmt->rowCount() > 0) {
+			return [
+				'success' => true,
+				'message' => 'Catégorie supprimée avec succès.'
+			];
+		}
+
+		return [
+			'success' => false,
+			'message' => 'Erreur lors de la suppression de la catégorie.'
+		];
+	}
+}
+
+class CategoryTask
+{
+    private $db;
+
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
+
+    public function add($categoryId, $taskId)
+    {	
+		if($this->exists($categoryId,$taskId)){
+			return [
+				'success' => false,
+				'message' => 'La tâche est déjà associée à cette catégorie.'
+			];
+		}
+
+        $sql = "INSERT INTO category_task (id_category, id_task) VALUES (?, ?)";
+        $stmt = $this->db->query($sql, [$categoryId, $taskId]);
+		return $this->checkResult($stmt,'Catégorie associée à la tâche avec succès.');
+    }
+
+    public function remove($categoryId, $taskId)
+    {
+        $sql = "DELETE FROM category_task WHERE id_category = ? AND id_task = ?";
+        $stmt = $this->db->query($sql, [$categoryId, $taskId]);
+        return $this->checkResult($stmt,'Catégorie dissociée de la tâche avec succès.');
+
+    }
+
+	private function checkResult($stmt, $successMessage)
+	{
+		if ($stmt->rowCount() > 0) {
+			return [
+				'success' => true,
+				'message' => $successMessage
+			];
+		}
+
+		return [
+			'success' => false,
+			'message' => 'Erreur lors de l\'opération.'
+		];
+	}
+
+
+	public function exists($categoryId, $taskId){
+		 $sql = "SELECT * FROM category_task WHERE id_category = ? AND id_task = ?";
+        $stmt = $this->db->query($sql, [$categoryId, $taskId]);
+        return $stmt->rowCount() > 0;
+	}
+
+
+    public function getCategoriesByTask($taskId)
+    {
+        $sql = "SELECT c.id, c.name
+                FROM categories c
+                INNER JOIN category_task ct ON c.id = ct.id_category
+                WHERE ct.id_task = ?";
+        $stmt = $this->db->query($sql, [$taskId]);
+        return $stmt->fetchAll();
+    }
+
+
+	public function getTasksByCategory($categoryId)
+	{
+		$sql = "SELECT t.id, t.titre
+				FROM tasks t
+				INNER JOIN category_task ct ON t.id = ct.id_task
+				WHERE ct.id_category = ?";
+		$stmt = $this->db->query($sql, [$categoryId]);
+		return $stmt->fetchAll();
+	}
 }
